@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>k-means cluster detector</title>
+  <meta charset="utf-8">
+  <meta name="description" content="k-means cluster detector">
+  <meta name="author" content="Mona Khaleghy Rad">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/interactive/css/aceeditor.css"></link>
+<link rel=stylesheet href="libraries/widgets/nvd3/css/nv.d3.css"></link>
+<link rel=stylesheet href="libraries/widgets/nvd3/css/rNVD3.css"></link>
+<link rel=stylesheet href="libraries/widgets/morris/css/morris.css"></link>
+<link rel=stylesheet href="libraries/widgets/leaflet/external/leaflet.css"></link>
+<link rel=stylesheet href="libraries/widgets/leaflet/external/leaflet-rCharts.css"></link>
+<link rel=stylesheet href="libraries/widgets/leaflet/external/legend.css"></link>
+<link rel=stylesheet href="libraries/widgets/rickshaw/css/rickshaw.min.css"></link>
+<link rel=stylesheet href="libraries/widgets/rickshaw/css/jquery-ui.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  <script src="libraries/widgets/highcharts/js/jquery-1.9.1.min.js"></script>
+<script src="libraries/widgets/highcharts/js/highcharts.js"></script>
+<script src="libraries/widgets/highcharts/js/highcharts-more.js"></script>
+<script src="libraries/widgets/highcharts/js/exporting.js"></script>
+<script src="libraries/widgets/nvd3/js/jquery-1.8.2.min.js"></script>
+<script src="libraries/widgets/nvd3/js/d3.v3.min.js"></script>
+<script src="libraries/widgets/nvd3/js/nv.d3.min-new.js"></script>
+<script src="libraries/widgets/nvd3/js/fisheye.js"></script>
+<script src="libraries/widgets/morris/js/raphael-2.1.0.min.js"></script>
+<script src="libraries/widgets/morris/js/morris.min.js"></script>
+<script src="libraries/widgets/leaflet/external/leaflet.js"></script>
+<script src="libraries/widgets/leaflet/external/leaflet-providers.js"></script>
+<script src="libraries/widgets/leaflet/external/Control.FullScreen.js"></script>
+<script src="libraries/widgets/rickshaw/js/d3.v2.min.js"></script>
+<script src="libraries/widgets/rickshaw/js/rickshaw.min.js"></script>
+<script src="libraries/widgets/rickshaw/js/jquery.min.js"></script>
+<script src="libraries/widgets/rickshaw/js/jquery-ui.min.js"></script>
+
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>k-means cluster detector</h1>
+    <h2></h2>
+    <p>Mona Khaleghy Rad<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>k-means clustering</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>kmeans is a method to partition n observations into k clusters where each observation belongs to the cluster with the nearest mean.</p>
+
+<p>\[
+\underset{s}{argmin} \sum^{k}_{i=1} \sum_{x \in S_i} ||x-\mu_i||^2
+\]</p>
+
+<p>This is a sample application to demonstrate k-means method, applied on 2D randomly generated data. </p>
+
+<p>Source: <a href="http://en.wikipedia.org/wiki/K-means_clustering">http://en.wikipedia.org/wiki/K-means_clustering</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The dataset that I use for this clustering app is a set of x and y that are consists of 100 normal random variables:</p>
+
+<pre><code class="r">x &lt;- rnorm(100)
+y &lt;- rnorm(100)
+z &lt;- rnorm(100)
+dataset &lt;- data.frame(x,y,z)
+</code></pre>
+
+<p>The data set can be changed to any other datasets available. using the Clusters selection bar in the application, we can adjust the number of clusters that we would like to consider in our dataset.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="interactive" style="background:;">
+  <hgroup>
+    <h2>k-means clustering detector app</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The interactive part of this app allows the user to pick the variables that they want to plot. Also it permits to choose the number of clustering. <a href="https://mkhalegh.shinyapps.io/kmeans/">https://mkhalegh.shinyapps.io/kmeans/</a></p>
+
+<div class="row-fluid">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="form-group shiny-input-container">
+          <label class="control-label" for="xcol">X Variable</label>
+          <div>
+            <select id="xcol"><option value="x" selected>x</option>
+<option value="y">y</option>
+<option value="z">z</option></select>
+            <script type="application/json" data-for="xcol" data-nonempty="">{}</script>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-group shiny-input-container">
+          <label class="control-label" for="ycol">Y Variable</label>
+          <div>
+            <select id="ycol"><option value="x">x</option>
+<option value="y" selected>y</option>
+<option value="z">z</option></select>
+            <script type="application/json" data-for="ycol" data-nonempty="">{}</script>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-group shiny-input-container">
+          <label for="clusters">Cluster count</label>
+          <input id="clusters" type="number" class="form-control" value="3" min="1" max="9"/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div id="kmeans" class="shiny-html-output rChart"></div>
+    </div>
+  </div>
+</div>
+
+<p><img src="./fig/kmeans.png" style="height: 500px; position:absolute;right:10%; bottom:5px"/></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Example:</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Here is an example plot of the kmeans clustering using <strong>rCharts</strong> :</p>
+
+<p><iframe src=' fig/unnamed-chunk-3-1.html ' scrolling='no' frameBorder='0' seamless class='rChart polycharts ' id=iframe- chart2d64d5fde0c ></iframe> <style>iframe.rChart{ width: 100%; height: 400px;}</style></p>
+
+<p><strong>Note:</strong> in <code>rPlot</code> there is no <code>X</code> symbol, so I used black circle for the centers of the clusters.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>example output of the application</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Here is an example plot of the application:</p>
+
+<pre><code class="r">clusters &lt;- kmeans(dataset, 3)
+par(mar = c(4.1, 4.1, 2, 0.5))
+plot(x,z, col = clusters$cluster, pch = 20, cex = 3)
+points(clusters$centers, pch = 4, cex = 4, lwd = 4)   
+</code></pre>
+
+<div class="rimage center"><img src="fig/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" class="plot" /></div>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='k-means clustering'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Data'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='k-means clustering detector app'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Example:'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='example output of the application'>
+         5
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  <script src="libraries/widgets/interactive/js/ace/js/ace.js"></script>
+<script src="libraries/widgets/interactive/js/opencpu-0.5.js"></script>
+<script src="libraries/widgets/interactive/js/interactive.js"></script>
+
+  <script src="shared/shiny.js" type="text/javascript"></script>
+  <script src="shared/slider/js/jquery.slider.min.js"></script>
+  <script src="shared/bootstrap/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="shared/slider/css/jquery.slider.min.css"></link>
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

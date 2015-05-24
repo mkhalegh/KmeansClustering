@@ -1,0 +1,125 @@
+---
+title       : k-means cluster detector
+subtitle    : 
+author      : Mona Khaleghy Rad
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [interactive, shiny, mathjax]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+theme       : united
+ext_widgets : {rCharts: ["libraries/highcharts","libraries/nvd3", "libraries/morris", "libraries/leaflet", "libraries/rickshaw"]}
+---
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'}
+# make this an external chunk that can be included in any file
+library(knitr)
+options(width = 100)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 100, tidy = F, cache.path = '.cache/', fig.path = 'fig/')
+
+options(xtable.type = 'html')
+knit_hooks$set(inline = function(x) {
+  if(is.numeric(x)) {
+    round(x, getOption('digits'))
+  } else {
+    paste(as.character(x), collapse = ', ')
+  }
+})
+knit_hooks$set(plot = knitr:::hook_plot_html)
+runif(1)
+```
+
+## k-means clustering
+
+kmeans is a method to partition n observations into k clusters where each observation belongs to the cluster with the nearest mean.
+
+
+$$
+\underset{s}{argmin} \sum^{k}_{i=1} \sum_{x \in S_i} ||x-\mu_i||^2
+$$
+
+
+This is a sample application to demonstrate k-means method, applied on 2D randomly generated data. 
+
+Source: [http://en.wikipedia.org/wiki/K-means_clustering](http://en.wikipedia.org/wiki/K-means_clustering)
+
+--- .class #id
+
+## Data
+
+The dataset that I use for this clustering app is a set of x and y that are consists of 100 normal random variables:
+
+```{r}
+x <- rnorm(100)
+y <- rnorm(100)
+z <- rnorm(100)
+dataset <- data.frame(x,y,z)
+```
+
+The data set can be changed to any other datasets available. using the Clusters selection bar in the application, we can adjust the number of clusters that we would like to consider in our dataset.
+
+--- .class #interactive 
+
+## k-means clustering detector app
+
+The interactive part of this app allows the user to pick the variables that they want to plot. Also it permits to choose the number of clustering. [https://mkhalegh.shinyapps.io/kmeans/](https://mkhalegh.shinyapps.io/kmeans/)
+
+```{r opt.label='shiny', echo=FALSE,warning=FALSE,message=FALSE, results='asis'}
+library(slidify)
+library(slidifyLibraries)
+require(shiny)
+require(rCharts)
+x <- rnorm(100)
+y <- rnorm(100)
+z <- rnorm(100)
+dataset <- data.frame(x,y,z)
+slidifyUI(fluidPage(
+               fluidRow(
+                        column(4, selectInput('xcol', 'X Variable', names(dataset))),
+                        column(4, selectInput('ycol', 'Y Variable', names(dataset),
+                                              selected=names(dataset)[[2]])),
+                        column(4, numericInput('clusters', 'Cluster count', 3,
+                                               min = 1, max = 9))
+#                        p("app:", a("https://mkhalegh.shinyapps.io/kmeans/"))
+                       ),
+          fluidRow(
+               tags$div(id='kmeans', class='shiny-html-output rChart')
+               )
+))
+
+
+```
+
+<img src="./fig/kmeans.png" style="height: 500px; position:absolute;right:10%; bottom:5px"/>
+
+
+--- .class #id
+
+## Example:
+
+Here is an example plot of the kmeans clustering using **rCharts** :
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE,cache=FALSE, results='asis'}
+require(rCharts)
+clusters <- kmeans(dataset, 3)
+dataset$cluster<-factor(clusters$cluster)
+r1<-rPlot(y~x, data=dataset, type="point", color="cluster", ylab=y, xlab=x)
+r1$layer(y~x,data=data.frame(clusters$centers), type="point", color=list(const="black"))
+r1
+```
+
+ **Note:** in `rPlot` there is no `X` symbol, so I used black circle for the centers of the clusters.
+
+--- .class #id
+
+## example output of the application
+
+Here is an example plot of the application:
+
+```{r, echo=TRUE,warning=FALSE,message=FALSE,cache=FALSE, results='asis', fig.height=3.5,fig.width=7} 
+clusters <- kmeans(dataset, 3)
+par(mar = c(4.1, 4.1, 2, 0.5))
+plot(x,z, col = clusters$cluster, pch = 20, cex = 3)
+points(clusters$centers, pch = 4, cex = 4, lwd = 4)   
+```
